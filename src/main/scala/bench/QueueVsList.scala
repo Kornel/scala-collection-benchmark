@@ -1,33 +1,42 @@
 package bench
 
-import org.openjdk.jmh.annotations.Benchmark
+import scala.collection.immutable.Queue
+import org.openjdk.jmh.annotations.{Benchmark, Setup, State, Scope}
 
-object L {
-  private val Max = 20000
-  val list = (1 to Max).toList
-  val queue = scala.collection.immutable.Queue(1 to Max: _*)
-  val vector = Vector(1 to Max: _*)
-}
-
+@State(Scope.Thread)
 class CollectionsBench {
 
+ 
+  var list: List[Int] = _
+  var queue:  Queue[Int] = _
+  var vector: Vector[Int] = _
+
+  @Setup
+  def setup(): Unit = {
+    val Max = 20000
+    list = (1 to Max).toList
+    queue = Queue(1 to Max: _*)
+    vector = Vector(1 to Max: _*)
+  }
+
+
   @Benchmark
-  def appendL(): Unit = L.list :+ 10
+  def appendL(): Unit = list :+ 10
   
   @Benchmark
-  def prependL(): Unit = 10 +: L.list
+  def prependL(): Unit = 10 +: list
 
   @Benchmark
-  def appendQ(): Unit = L.queue :+ 10
+  def appendQ(): Unit = queue :+ 10
 
   @Benchmark
-  def prependQ(): Unit = 10 +: L.queue
+  def prependQ(): Unit = 10 +: queue
   
   @Benchmark
-  def appendV(): Unit = L.vector :+ 10
+  def appendV(): Unit = vector :+ 10
 
   @Benchmark
-  def prependV(): Unit = 10 +: L.vector
+  def prependV(): Unit = 10 +: vector
 }
 
 
